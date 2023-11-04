@@ -1,0 +1,36 @@
+#!/bin/bash
+
+address_file="addressbook.txt"
+
+if [ ! -f "$address_file" ]; then
+    touch "$address_file"
+fi
+
+case $1 in
+    new)
+        name=$2
+        email=$3
+        echo "$name $email" >> "$address_file"
+        ;;
+    list)
+        if [ -s "$address_file" ]; then
+            cat "$address_file"
+        else
+            echo "addressbook is empty"
+        fi
+        ;;
+    remove)
+        name=$2
+        sed -i "/^$name /d" "$address_file"
+        ;;
+    clear)
+        > "$address_file"
+        ;;
+    lookup)
+        name=$2
+        grep "^$name " "$address_file" | rev | awk '{print $1}' | rev
+        ;;
+    *)
+        echo "Invalid command"
+        ;;
+esac
